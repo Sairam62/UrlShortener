@@ -47,7 +47,7 @@ Before you begin, ensure you have met the following requirements:
 	update-database
 
 ## Usage
-To Genrate a Tiny URL for Long URL.
+To Generate a Tiny URL for Long URL.
 
 ### API Endpoints
 
