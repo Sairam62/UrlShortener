@@ -2,7 +2,7 @@
 {
     public interface ITinyUrlService
     {
-        Task<string> ShortenUrlAsync(string LongUrl);
+        Task<string?> ShortenUrlAsync(string LongUrl);
 
         Task<string?> RedirectUrlAsync(string shortCode);
     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Text;
 using UrlShortener.Data;
 using UrlShortener.Models;
@@ -10,14 +11,18 @@ namespace UrlShortener.Services
     {
         private readonly AppDbContext _dbcontext;
         private const string Base62Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-        public TinyUrlService(AppDbContext context)
+        private readonly IDistributedCache _cache;
+        private readonly IConfiguration config;
+        
+        public TinyUrlService(AppDbContext context, IDistributedCache cache,IConfiguration config)
         {
             _dbcontext = context;
+            _cache = cache;
+            this.config = config;
         }
 
-        public async Task<string> ShortenUrlAsync(string LongUrl)
-        {
+        public async Task<string?> ShortenUrlAsync(string LongUrl)
+        {            
             //Generate a unique short code
             string ShortUrl = GenerateShortUrl();
 
@@ -34,7 +39,12 @@ namespace UrlShortener.Services
             try
             {
                 await _dbcontext.SaveChangesAsync();
-                
+                //Setting Cache
+                await _cache.SetStringAsync(ShortUrl, LongUrl, new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(config.GetValue<double>("AbsoluteExpiry"))
+                });
+
                 return ShortUrl;
             }
             catch (DbUpdateException ex)
@@ -48,7 +58,7 @@ namespace UrlShortener.Services
                     return await ShortenUrlAsync(LongUrl); // Retry with a new short code
                 }
 
-                throw; // Handle other exceptions
+                return null;
             }
 
         }
@@ -63,6 +73,11 @@ namespace UrlShortener.Services
 
         public async Task<string?> RedirectUrlAsync(string shortCode)
         {
+            //Getting Cache
+            string longUrl = await _cache.GetStringAsync(shortCode);
+
+            if (!string.IsNullOrEmpty(longUrl)) { return longUrl; }
+
             var mapping = await _dbcontext.UrlMappings.FirstOrDefaultAsync(m => m.ShortCode == shortCode);
 
             if(mapping != null)
