@@ -38,3 +38,11 @@ Before you begin, ensure you have met the following requirements:
 
    ```bash
    git clone https://github.com/Sairam62/UrlShortener.git
+
+2. Do the Migration:
+
+	Open Packager Manager Console
+
+	Run Below Commands:
+	Add-Migration UrlShortener.Data.AppDbContext
+	update-database
