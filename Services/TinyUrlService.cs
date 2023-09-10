@@ -20,7 +20,6 @@ namespace UrlShortener.Services
         {
             //Generate a unique short code
             string ShortUrl = GenerateShortUrl();
-            ShortUrl = "8bURLqr";
 
             //Save Mapping to the DB
             var mapping = new UrlMapping

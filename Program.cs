@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql("Server=localhost;Port=5432;Database=UrlShortener;User Id=postgres;Password=Sairam@62"));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("ShortenUrl")));
 
 builder.Services.AddScoped<ITinyUrlService, TinyUrlService>();
 
