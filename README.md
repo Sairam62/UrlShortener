@@ -12,8 +12,6 @@ The URL Shortener API is a web service that allows you to shorten long URLs into
 - [Usage](#usage)
   - [API Endpoints](#api-endpoints)
 - [Configuration](#configuration)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
@@ -34,15 +32,35 @@ Before you begin, ensure you have met the following requirements:
 
 ### Installation
 
-1. Clone the repository:
+- Clone the repository:
 
    ```bash
    git clone https://github.com/Sairam62/UrlShortener.git
 
-2. Do the Migration:
+### Database Migrations
 
-	Open Packager Manager Console
-
-	Run Below Commands:
+- 	Open Packager Manager Console
+    Run Below Commands:
+    
+    ```bash	
 	Add-Migration UrlShortener.Data.AppDbContext
 	update-database
+
+## Usage
+To Genrate a Tiny URL for Long URL.
+
+### API Endpoints
+
+#### Shorten a URL:
+
+- HTTP Method: POST
+- URL: /api/UrlShortener/shorten
+- Request Body: JSON with a longUrl property.
+- Response: Returns the generated short code.
+#### Redirect to Original URL:
+
+- HTTP Method: GET
+- URL: /api/UrlShortener/{shortCode}
+- Response: Redirects to the original long URL associated with the short code.
+## Configuration
+- Database connection settings can be configured in the appsettings.json file.
